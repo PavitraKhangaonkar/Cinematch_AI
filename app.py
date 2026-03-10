@@ -174,13 +174,20 @@ def load_or_create_data():
             
         except Exception as rebuild_error:
             st.error(f"❌ Failed to rebuild data: {str(rebuild_error)}")
-            st.error("Please check that tmdb_5000_movies.csv and tmdb_5000_credits.csv are present and valid.")
-            raise rebuild_error
+            st.error("Please check that the CSV files are accessible and the data is valid.")
+            # Return None to prevent crash, will be handled in main code
+            return (None, None)
 
 st.header("Movie Recommender System with AI")
 
 # Load or create data
 movies, similarity = load_or_create_data()
+
+# Check if data loading failed
+if movies is None or similarity is None:
+    st.error("❌ Failed to load movie data. Please check your internet connection and try again.")
+    st.error("If the problem persists, contact support.")
+    st.stop()
 
 movies_list = movies['title'].values
 
